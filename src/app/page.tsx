@@ -30,6 +30,7 @@ export default function Roleta() {
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState("");
+  const [showDiv, setShowDiv] = useState(true);
 
   const spinWheel = () => {
     setSelectedPrize("");
@@ -45,6 +46,7 @@ export default function Roleta() {
 
     setAngle(finalAngle);
     setSpinning(true);
+    setShowDiv(false);
 
     setTimeout(() => {
       setSelectedPrize(prizes[prizeIndex]);
@@ -57,6 +59,9 @@ export default function Roleta() {
     setSpinning(false);
     setSelectedPrize("");
     setStage("home");
+    setAngle(0);
+    setShowDiv(true);
+    
   };
 
   // NOVO: useEffect para disparar os confetes na tela de resultado
@@ -72,10 +77,19 @@ export default function Roleta() {
   }, [stage]);
 
   return (
-    <div
-      className="w-screen h-screen flex items-center justify-center bg-cover bg-center text-black relative overflow-hidden bg-sky-700"
-      style={{ backgroundImage: `url(${BackgroundImage})` }}
-    >
+    <div className="w-screen h-screen flex items-center justify-center text-black relative overflow-hidden">
+      <video
+        autoPlay
+        loop
+        muted
+        className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+      >
+        {/* Substitua pelo caminho do seu vídeo */}
+        <source src="/assets/bg.mp4" type="video/mp4" />
+      </video>
+
+      <div className="w-full h-screen absolute top-0 left-0 bg-black/30 backdrop-blur-sm -z-10"/>
+
       <style jsx global>{`
         body,
         html {
@@ -90,7 +104,7 @@ export default function Roleta() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
         >
-          <img src={logo} alt="logo-principal" width={700}  />
+          <img src={logo} alt="logo-principal" width={700} />
           <motion.button
             className="mt-10 px-14 py-6 font-bold text-4xl bg-sky-500 text-white rounded-full shadow-lg hover:bg-yellow-400 transition-colors duration-300"
             onClick={() => setStage("game")}
@@ -178,6 +192,13 @@ export default function Roleta() {
                 style={{ backgroundImage: `url(${logo2})` }}
               />
             </div>
+            {showDiv && (
+              <div className=" mt-20">
+                <p className="text-center text-white text-4xl font-bold animate-pulse">
+                  APERTE NA ROLETA PARA GIRAR
+                </p>
+              </div>
+            )}
           </div>
         </motion.div>
       )}
