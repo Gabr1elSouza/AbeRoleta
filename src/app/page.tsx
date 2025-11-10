@@ -2,6 +2,7 @@
 
 import confetti from "canvas-confetti";
 import { motion } from "framer-motion";
+import { img } from "framer-motion/client";
 import { useEffect, useState } from "react";
 
 const SetaImage = "/assets/SETA.png";
@@ -31,6 +32,7 @@ export default function Roleta() {
   const [spinning, setSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState("");
   const [showDiv, setShowDiv] = useState(true);
+  const [showVideo, setShowVideo] = useState(true);
 
   const spinWheel = () => {
     setSelectedPrize("");
@@ -61,7 +63,13 @@ export default function Roleta() {
     setStage("home");
     setAngle(0);
     setShowDiv(true);
+    setShowVideo(true);
     
+  };
+
+  const onStartGame = () => {
+    setShowVideo(false);
+    setStage("game");
   };
 
   // NOVO: useEffect para disparar os confetes na tela de resultado
@@ -71,24 +79,30 @@ export default function Roleta() {
         particleCount: 200,
         spread: 100,
         origin: { y: 0.6 },
-        zIndex: 9999, // Garante que fique por cima de tudo
+        zIndex: 9999,
       });
     }
   }, [stage]);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center text-black relative overflow-hidden">
-      <video
-        autoPlay
-        loop
-        muted
-        className="absolute top-0 left-0 w-full h-full object-cover -z-10"
-      >
-        {/* Substitua pelo caminho do seu vídeo */}
-        <source src="/assets/bg.mp4" type="video/mp4" />
-      </video>
+      {showVideo ? (
+        <>
+        <video
+          autoPlay
+          loop
+          muted
+          className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+        >
+          <source src="/assets/bg.mp4" type="video/mp4" />
+        </video>
+        <div className="w-full h-screen absolute top-0 left-0 bg-black/30 backdrop-blur-sm -z-10"/>
+        </>
+      ) : (
+        <img src="/assets/bg-fundo.jpg" alt="background" className="absolute top-0 left-0 w-full h-full object-cover -z-10" />
+      )}
 
-      <div className="w-full h-screen absolute top-0 left-0 bg-black/30 backdrop-blur-sm -z-10"/>
+      
 
       <style jsx global>{`
         body,
@@ -107,7 +121,7 @@ export default function Roleta() {
           <img src={logo} alt="logo-principal" width={700} />
           <motion.button
             className="mt-10 px-14 py-6 font-bold text-4xl bg-sky-500 text-white rounded-full shadow-lg hover:bg-yellow-400 transition-colors duration-300"
-            onClick={() => setStage("game")}
+            onClick={onStartGame}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -194,7 +208,7 @@ export default function Roleta() {
             </div>
             {showDiv && (
               <div className=" mt-20">
-                <p className="text-center text-white text-4xl font-bold animate-pulse">
+                <p className="text-center text-white text-shadow-lg text-5xl font-bold animate-pulse">
                   APERTE NA ROLETA PARA GIRAR
                 </p>
               </div>
